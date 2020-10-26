@@ -47,8 +47,7 @@
 
 #include "SDL/SDL.h"
 
-#include "impl/stdstring.h"
-#include "impl/scriptstring.h"
+#include "impl/scriptstdstring.h"
 
 #include "system/String.h"
 
@@ -167,11 +166,11 @@ namespace hpl {
 		mpScriptOutput = hplNew( cScriptOutput, () );
 		mpScriptEngine->SetMessageCallback(asMETHOD(cScriptOutput,AddMessage), mpScriptOutput, asCALL_THISCALL);
 
-#ifdef AS_MAX_PORTABILITY
-		RegisterScriptString(mpScriptEngine);
-#else
+//#ifdef AS_MAX_PORTABILITY
+//		RegisterScriptString(mpScriptEngine);
+//#else
 		RegisterStdString(mpScriptEngine);
-#endif
+//#endif
 
 		mlHandleCount = 0;
 

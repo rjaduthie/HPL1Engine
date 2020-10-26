@@ -1,0 +1,1 @@
+/mnt/extra/workspaces/hpl/angelscript_2.34.0/sdk/add_on/scriptstdstring/scriptstdstring.cpp

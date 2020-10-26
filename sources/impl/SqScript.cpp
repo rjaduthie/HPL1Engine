@@ -44,12 +44,12 @@ namespace hpl {
 		//Create a unique module name
 		msModuleName = "Module_"+cString::ToString(cMath::RandRectl(0,1000000))+
 						"_"+cString::ToString(mlHandle);
-
+        mpModule = mpScriptEngine->GetModule(msModuleName.c_str(), asGM_CREATE_IF_NOT_EXISTS);
 	}
 
 	cSqScript::~cSqScript()
 	{
-		mpScriptEngine->Discard(msModuleName.c_str());
+		mpModule->Discard();
 		mpContext->Release();
 	}
 
@@ -65,27 +65,25 @@ namespace hpl {
 	{
 		int lLength;
 		char *pCharBuffer = LoadCharBuffer(asFileName,lLength);
-		if(pCharBuffer==NULL){
+		if(pCharBuffer==nullptr){
 			Error("Couldn't load script '%s'!\n",asFileName.c_str());
 			return false;
 		}
 
-		if(mpScriptEngine->AddScriptSection(msModuleName.c_str(), "main", pCharBuffer, lLength)<0)
+		if(mpModule->AddScriptSection("main", pCharBuffer, lLength) < 0)
 		{
 			Error("Couldn't add script '%s'!\n",asFileName.c_str());
 			hplDeleteArray(pCharBuffer);
 			return false;
 		}
 
-		if(mpScriptEngine->Build(msModuleName.c_str())<0)
+		if(mpModule->Build() < 0)
 		{
 			Error("Couldn't build script '%s'!\n",asFileName.c_str());
 			Log("------- SCRIPT OUTPUT BEGIN --------------------------\n");
 			mpScriptOutput->Display();
 			mpScriptOutput->Clear();
 			Log("------- SCRIPT OUTPUT END ----------------------------\n");
-
-
 
 			hplDeleteArray(pCharBuffer);
 			return false;
@@ -100,7 +98,7 @@ namespace hpl {
 
 	int cSqScript::GetFuncHandle(const tString& asFunc)
 	{
-		return mpScriptEngine->GetFunctionIDByName(msModuleName.c_str(),asFunc.c_str());
+		return mpModule->GetFunctionByName(asFunc.c_str())->GetId();
 	}
 
 	//-----------------------------------------------------------------------
@@ -114,8 +112,12 @@ namespace hpl {
 
 	bool cSqScript::Run(const tString& asFuncLine)
 	{
-		mpScriptEngine->ExecuteString(msModuleName.c_str(), asFuncLine.c_str());
-
+	    asIScriptFunction *func = mpModule->GetFunctionByDecl(asFuncLine.c_str());
+	    mpContext->Prepare(func);
+	    if(mpContext->Execute() == asEXECUTION_FINISHED) {
+	        asDWORD ret = mpContext->GetReturnDWord();
+	    }
+        mpContext->Release();
 		return true;
 	}
 
@@ -123,11 +125,15 @@ namespace hpl {
 
 	bool cSqScript::Run(int alHandle)
 	{
-		mpContext->Prepare(alHandle);
+        asIScriptFunction *func = mpModule->GetFunctionByIndex(alHandle);
+
+		mpContext->Prepare(func);
 
 		/* Set all the args here */
-
-		mpContext->Execute();
+        if(mpContext->Execute() == asEXECUTION_FINISHED) {
+            asDWORD ret = mpContext->GetReturnDWord();
+        }
+        mpContext->Release();
 
 		return true;
 	}
@@ -143,8 +149,8 @@ namespace hpl {
 	char* cSqScript::LoadCharBuffer(const tString& asFileName, int& alLength)
 	{
 		FILE *pFile = fopen(asFileName.c_str(), "rb");
-		if(pFile==NULL){
-			return NULL;
+		if(pFile==nullptr){
+			return nullptr;
 		}
 
 		int lLength = (int)Platform::FileLength(pFile);

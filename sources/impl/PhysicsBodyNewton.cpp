@@ -300,82 +300,83 @@ namespace hpl {
 														vMassCentre);
 
 			cVector3f vWorldPosition = GetWorldPosition() + vCentreOffset;
-			NewtonAddBodyImpulse(mpNewtonBody, avImpulse.v, vWorldPosition.v);
+			NewtonBodyAddImpulse(mpNewtonBody, avImpulse.v, vWorldPosition.v);
 		}
 		else
 		{
-			NewtonAddBodyImpulse(mpNewtonBody, avImpulse.v, GetWorldPosition().v);
+			NewtonBodyAddImpulse(mpNewtonBody, avImpulse.v, GetWorldPosition().v);
 		}
 	}
 	void cPhysicsBodyNewton::AddImpulseAtPosition(const cVector3f &avImpulse, const cVector3f &avPos)
 	{
-		NewtonAddBodyImpulse(mpNewtonBody, avImpulse.v, avPos.v);
+		NewtonBodyAddImpulse(mpNewtonBody, avImpulse.v, avPos.v);
 	}
 
 	//-----------------------------------------------------------------------
 
 	void cPhysicsBodyNewton::SetEnabled(bool abEnabled)
 	{
+	    // TODO: decide whether freeze or sleep is better here
 		if (abEnabled)
-			NewtonWorldUnfreezeBody(mpNewtonWorld, mpNewtonBody);
+			NewtonBodySetFreezeState(mpNewtonBody, 0);
 		else
-			NewtonWorldFreezeBody(mpNewtonWorld, mpNewtonBody);
+            NewtonBodySetFreezeState(mpNewtonBody, 1);
 	}
 	bool cPhysicsBodyNewton::GetEnabled() const
 	{
-		return NewtonBodyGetSleepingState(mpNewtonBody) ==0?false: true;
+		return NewtonBodyGetSleepState(mpNewtonBody) != 0;
 	}
 
 	//-----------------------------------------------------------------------
 
 	void cPhysicsBodyNewton::SetAutoDisable(bool abEnabled)
 	{
-		NewtonBodySetAutoFreeze(mpNewtonBody, abEnabled ? 1 : 0);
+		NewtonBodySetAutoSleep(mpNewtonBody, abEnabled ? 1 : 0);
 	}
 	bool cPhysicsBodyNewton::GetAutoDisable() const
 	{
-		return NewtonBodyGetAutoFreeze(mpNewtonBody) == 0 ? false : true;
+		return NewtonBodyGetAutoSleep(mpNewtonBody) != 0;
 	}
 
 	//-----------------------------------------------------------------------
-
-	void cPhysicsBodyNewton::SetAutoDisableLinearThreshold(float afThresold)
-	{
-		mfAutoDisableLinearThreshold = afThresold;
-		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
-	}
-	float cPhysicsBodyNewton::GetAutoDisableLinearThreshold() const
-	{
-		return mfAutoDisableLinearThreshold;
-	}
-
-	//-----------------------------------------------------------------------
-
-	void cPhysicsBodyNewton::SetAutoDisableAngularThreshold(float afThresold)
-	{
-		mfAutoDisableAngularThreshold = afThresold;
-		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
-	}
-	float cPhysicsBodyNewton::GetAutoDisableAngularThreshold() const
-	{
-		return mfAutoDisableAngularThreshold;
-	}
-
-	//-----------------------------------------------------------------------
-
-	void cPhysicsBodyNewton::SetAutoDisableNumSteps(int anNum)
-	{
-		mlAutoDisableNumSteps = anNum;
-		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
-	}
-
-	int cPhysicsBodyNewton::GetAutoDisableNumSteps() const
-	{
-		return mlAutoDisableNumSteps;
-	}
+// NewtonBodySetFreezeTreshold [sic] is no longer available
+//	void cPhysicsBodyNewton::SetAutoDisableLinearThreshold(float afThreshold)
+//	{
+//		mfAutoDisableLinearThreshold = afThreshold;
+//		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
+//			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
+//	}
+//	float cPhysicsBodyNewton::GetAutoDisableLinearThreshold() const
+//	{
+//		return mfAutoDisableLinearThreshold;
+//	}
+//
+//	//-----------------------------------------------------------------------
+//
+//	void cPhysicsBodyNewton::SetAutoDisableAngularThreshold(float afThresold)
+//	{
+//		mfAutoDisableAngularThreshold = afThresold;
+//		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
+//			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
+//	}
+//	float cPhysicsBodyNewton::GetAutoDisableAngularThreshold() const
+//	{
+//		return mfAutoDisableAngularThreshold;
+//	}
+//
+//	//-----------------------------------------------------------------------
+//
+//	void cPhysicsBodyNewton::SetAutoDisableNumSteps(int anNum)
+//	{
+//		mlAutoDisableNumSteps = anNum;
+//		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
+//			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
+//	}
+//
+//	int cPhysicsBodyNewton::GetAutoDisableNumSteps() const
+//	{
+//		return mlAutoDisableNumSteps;
+//	}
 
 	//-----------------------------------------------------------------------
 
@@ -424,15 +425,15 @@ namespace hpl {
 			vP0 = vP1;
 		}
 	}
-
-	////////////////////////////////////////////
-
-	void cPhysicsBodyNewton::RenderDebugGeometry(iLowLevelGraphics *apLowLevel,const cColor &aColor)
-	{
-		gpLowLevelGraphics = apLowLevel;
-		gDebugColor = aColor;
-		NewtonBodyForEachPolygonDo (mpNewtonBody, RenderDebugPolygon);
-	}
+//  //TODO:  NewtonBodyForEachPolygonDo has been removed from the Newton API
+//	////////////////////////////////////////////
+//
+//	void cPhysicsBodyNewton::RenderDebugGeometry(iLowLevelGraphics *apLowLevel,const cColor &aColor)
+//	{
+//		gpLowLevelGraphics = apLowLevel;
+//		gDebugColor = aColor;
+//		NewtonBodyForEachPolygonDo (mpNewtonBody, RenderDebugPolygon);
+//	}
 
 	//-----------------------------------------------------------------------
 
@@ -454,7 +455,7 @@ namespace hpl {
 
 	void cPhysicsBodyNewton::OnTransformCallback(const NewtonBody* apBody, const dFloat* apMatrix)
 	{
-		cPhysicsBodyNewton* pRigidBody = (cPhysicsBodyNewton*) NewtonBodyGetUserData(apBody);
+		auto* pRigidBody = (cPhysicsBodyNewton*) NewtonBodyGetUserData(apBody);
 
 		pRigidBody->m_mtxLocalTransform.FromTranspose(apMatrix);
 
@@ -484,7 +485,7 @@ namespace hpl {
 		float fMass;
 		float fX,fY,fZ;
 
-		cPhysicsBodyNewton* pRigidBody = (cPhysicsBodyNewton*) NewtonBodyGetUserData(apBody);
+		auto* pRigidBody = (cPhysicsBodyNewton*) NewtonBodyGetUserData(apBody);
 
 		if(!pRigidBody->IsActive()) return;
 

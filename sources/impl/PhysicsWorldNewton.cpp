@@ -489,10 +489,12 @@ namespace hpl {
 					cCollideShapeNewton *pSubShapeA = static_cast<cCollideShapeNewton*>(pNewtonShapeA->GetSubShape(a));
 					cCollideShapeNewton *pSubShapeB = static_cast<cCollideShapeNewton*>(pNewtonShapeB->GetSubShape(b));
 
+					// TODO: determine the correct value for threadIndex - cf.:
+					//  http://www.newtondynamics.com/wiki/index.php/ThreadIndex
 					int lNum = NewtonCollisionCollide(mpNewtonWorld, alMaxPoints,
 												pSubShapeA->GetNewtonCollision(), &(mtxTransposeA.m[0][0]),
 												pSubShapeB->GetNewtonCollision(), &(mtxTransposeB.m[0][0]),
-												mpTempPoints, mpTempNormals, mpTempDepths);
+												mpTempPoints, mpTempNormals, mpTempDepths, 0);
 					if(lNum<1) continue;
 					if(lNum > alMaxPoints )lNum = alMaxPoints;
 
@@ -533,10 +535,12 @@ namespace hpl {
 		//Check NON compound collision
 		else
 		{
+            // TODO: determine the correct value for threadIndex - cf.:
+            //  http://www.newtondynamics.com/wiki/index.php/ThreadIndex
 			int lNum = NewtonCollisionCollide(mpNewtonWorld, alMaxPoints,
 										pNewtonShapeA->GetNewtonCollision(), &(mtxTransposeA.m[0][0]),
 										pNewtonShapeB->GetNewtonCollision(), &(mtxTransposeB.m[0][0]),
-										mpTempPoints, mpTempNormals, mpTempDepths);
+										mpTempPoints, mpTempNormals, mpTempDepths, 0);
 
 			if(lNum<1) return false;
 			if(lNum > alMaxPoints )lNum = alMaxPoints;
@@ -567,7 +571,7 @@ namespace hpl {
 
 	void cPhysicsWorldNewton::RenderDebugGeometry(iLowLevelGraphics *apLowLevel,const cColor &aColor)
 	{
-		tPhysicsBodyListIt it = mlstBodies.begin();
+		auto it = mlstBodies.begin();
 		for(;it != mlstBodies.end(); ++it)
 		{
 			iPhysicsBody *pBody = *it;

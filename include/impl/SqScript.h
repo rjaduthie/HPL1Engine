@@ -43,6 +43,7 @@ namespace hpl {
 
 	private:
 		asIScriptEngine *mpScriptEngine;
+		asIScriptModule *mpModule;
 		cScriptOutput *mpScriptOutput;
 
 		asIScriptContext *mpContext;
@@ -50,7 +51,7 @@ namespace hpl {
 		int mlHandle;
 		tString msModuleName;
 
-		char* LoadCharBuffer(const tString& asFileName, int& alLength);
+		static char* LoadCharBuffer(const tString& asFileName, int& alLength);
 	};
 };
 #endif // HPL_SCRIPT_H

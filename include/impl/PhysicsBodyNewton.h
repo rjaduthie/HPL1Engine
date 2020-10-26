@@ -71,7 +71,7 @@ namespace hpl {
 		bool GetEnabled() const;
 		void SetAutoDisable(bool abEnabled);
 		bool GetAutoDisable() const;
-		void SetAutoDisableLinearThreshold(float afThresold);
+		void SetAutoDisableLinearThreshold(float afThreshold);
 		float GetAutoDisableLinearThreshold() const;
 		void SetAutoDisableAngularThreshold(float afThresold);
 		float GetAutoDisableAngularThreshold() const;
