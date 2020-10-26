@@ -32,3 +32,10 @@ set_target_properties(angelscript PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_S
 
 add_library(SDLmain STATIC IMPORTED)
 set_target_properties(SDLmain PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/lib/linux/libSDLmain.a)
+
+#include(CheckCXXCompilerFlag)
+#check_cxx_compiler_flag(-fpermissive HAS_FPERMISSIVE)
+#if (HAS_FPERMISSIVE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+#endif()
+

@@ -27,6 +27,9 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <GL/glew.h>
+#include <GL/glx.h>
+//#include <GL/GLee.h>
 
 #include "graphics/FontData.h"
 #include "impl/LowLevelGraphicsSDL.h"
@@ -222,15 +225,15 @@ namespace hpl {
 			SetWindowCaption(asWindowCaption);
 		}
 
-		Log(" Init Glee...");
-		if(GLeeInit())
+		Log(" GLEW sniffin' (aka initialising)...");
+		if(GLEW_OK != glewInit())
 		{
 			Log("OK\n");
 		}
 		else
 		{
 			Log("ERROR!\n");
-			Error(" Couldn't init glee!\n");
+			Error(" Couldn't init GLEW!\n");
 		}
 
 		///Setup up windows specifc context:
@@ -348,14 +351,14 @@ namespace hpl {
 		//Texture Rectangle
 		case eGraphicCaps_TextureTargetRectangle:
 			{
-				return 1;//GLEE_ARB_texture_rectangle?1:0;
+				return 1;//GLEW_ARB_texture_rectangle?1:0;
 			}
 
 
 		//Vertex Buffer Object
 		case eGraphicCaps_VertexBufferObject:
 			{
-				return GLEE_ARB_vertex_buffer_object?1:0;
+				return GLEW_ARB_vertex_buffer_object?1:0;
 			}
 
 		//Two Sided Stencil
@@ -364,8 +367,8 @@ namespace hpl {
 				//DEBUG:
 				//return 0;
 
-				if(GLEE_EXT_stencil_two_side) return 1;
-				else if(GLEE_ATI_separate_stencil) return 1;
+				if(GLEW_EXT_stencil_two_side) return 1;
+				else if(GLEW_ATI_separate_stencil) return 1;
 				else return 0;
 			}
 
@@ -390,14 +393,14 @@ namespace hpl {
 		//Texture Anisotropy
 		case eGraphicCaps_AnisotropicFiltering:
 			{
-				if(GLEE_EXT_texture_filter_anisotropic) return 1;
+				if(GLEW_EXT_texture_filter_anisotropic) return 1;
 				else return 0;
 			}
 
 		//Texture Anisotropy
 		case eGraphicCaps_MaxAnisotropicFiltering:
 			{
-				if(!GLEE_EXT_texture_filter_anisotropic) return 0;
+				if(!GLEW_EXT_texture_filter_anisotropic) return 0;
 
 				float fMax;
 				glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&fMax);
@@ -407,7 +410,7 @@ namespace hpl {
 		//Multisampling
 		case eGraphicCaps_Multisampling:
 			{
-				if(GLEE_ARB_multisample) return 1;
+				if(GLEW_ARB_multisample) return 1;
 				return 0;
 			}
 
@@ -418,7 +421,7 @@ namespace hpl {
 				//Debbug:
 				//return 0;
 
-				if(GLEE_ARB_vertex_program) return 1;
+				if(GLEW_ARB_vertex_program) return 1;
 				else return 0;
 			}
 
@@ -428,14 +431,14 @@ namespace hpl {
 				//Debbug:
 				//return 0;
 
-				if(GLEE_ARB_fragment_program) return 1;
+				if(GLEW_ARB_fragment_program) return 1;
 				else return 0;
 			}
 
 		//GL NV register combiners
 		case eGraphicCaps_GL_NVRegisterCombiners:
 			{
-				if(GLEE_NV_register_combiners) return 1;
+				if(GLEW_NV_register_combiners) return 1;
 				else return 0;
 			}
 
@@ -450,7 +453,7 @@ namespace hpl {
 		//GL ATI Fragment Shader
 		case eGraphicCaps_GL_ATIFragmentShader:
 			{
-				if(GLEE_ATI_fragment_shader) return 1;
+				if(GLEW_ATI_fragment_shader) return 1;
 				else return 0;
 			}
 		}
@@ -473,14 +476,14 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SetVsyncActive(bool abX)
 	{
 		#if defined(WIN32)
-		if(GLEE_WGL_EXT_swap_control)
+		if(GLEW_WGL_EXT_swap_control)
 		{
 			wglSwapIntervalEXT(abX ? 1 : 0);
 		}
 		#elif defined(__linux__)
-		if (GLEE_GLX_SGI_swap_control)
-		{
-			glXSwapIntervalSGI(abX ? 1 : 0);
+		if (GLX_MESA_swap_control)
+        {
+			glXSwapIntervalMESA(abX ? 1 : 0);
 		}
 		#endif
 	}
@@ -489,7 +492,7 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetMultisamplingActive(bool abX)
 	{
-		if(!GLEE_ARB_multisample || mlMultisampling<=0) return;
+		if(!GLEW_ARB_multisample || mlMultisampling<=0) return;
 
 		if(abX)
 			glEnable(GL_MULTISAMPLE_ARB);
@@ -783,7 +786,7 @@ namespace hpl {
 			LastTarget = GetGLTextureTargetEnum(mpCurrentTexture[alUnit]->GetTarget());
 
 		//Check if multi texturing is supported.
-		if(GLEE_ARB_multitexture){
+		if(GLEW_ARB_multitexture){
 			glActiveTextureARB(GL_TEXTURE0_ARB + alUnit);
 		}
 
@@ -1102,7 +1105,7 @@ namespace hpl {
 
 	/*void cLowLevelGraphicsSDL::SetStencilTwoSideActive(bool abX)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			glEnable(GL_STENCIL_TEST_TWO_SIDE_EXT);
 		}
@@ -1112,7 +1115,7 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetStencilFace(eStencilFace aFace)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			if(aFace == eStencilFace_Front) glActiveStencilFaceEXT(GL_FRONT);
 			else							glActiveStencilFaceEXT(GL_BACK);
@@ -1139,7 +1142,7 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SetStencil(eStencilFunc aFunc,int alRef, unsigned int aMask,
 					eStencilOp aFailOp,eStencilOp aZFailOp,eStencilOp aZPassOp)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			//glDisable(GL_STENCIL_TEST_TWO_SIDE_EXT);//shouldn't be needed..
 			glActiveStencilFaceEXT(GL_FRONT);
@@ -1158,7 +1161,7 @@ namespace hpl {
 					eStencilOp aBackFailOp,eStencilOp aBackZFailOp,eStencilOp aBackZPassOp)
 	{
 		//Nvidia implementation
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			glEnable(GL_STENCIL_TEST_TWO_SIDE_EXT);
 
@@ -1176,7 +1179,7 @@ namespace hpl {
 						GetGLStencilOpEnum(aBackZPassOp));
 		}
 		//Ati implementation
-		else if(GLEE_ATI_separate_stencil)
+		else if(GLEW_ATI_separate_stencil)
 		{
 			//Front
 			glStencilOpSeparateATI( GL_FRONT, GetGLStencilOpEnum(aFrontFailOp),
@@ -1200,7 +1203,7 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetStencilTwoSide(bool abX)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			glDisable(GL_STENCIL_TEST_TWO_SIDE_EXT);
 		}
@@ -1259,7 +1262,7 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SetBlendFuncSeparate(eBlendFunc aSrcFactorColor, eBlendFunc aDestFactorColor,
 		eBlendFunc aSrcFactorAlpha, eBlendFunc aDestFactorAlpha)
 	{
-		if(GLEE_EXT_blend_func_separate)
+		if(GLEW_EXT_blend_func_separate)
 		{
 			glBlendFuncSeparateEXT(GetGLBlendEnum(aSrcFactorColor),
 								GetGLBlendEnum(aDestFactorColor),
