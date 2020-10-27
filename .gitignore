@@ -6,3 +6,4 @@
 /assets/*.log
 /assets/core/cache/*collcach
 .idea
+libHPL.a
