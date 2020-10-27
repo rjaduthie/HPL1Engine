@@ -28,8 +28,10 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <GL/glew.h>
+#ifndef GLX_GLXEXT_PROTOTYPES
+#define GLX_GLXEXT_PROTOTYPES 1
+#endif
 #include <GL/glx.h>
-//#include <GL/GLee.h>
 
 #include "graphics/FontData.h"
 #include "impl/LowLevelGraphicsSDL.h"
@@ -481,9 +483,9 @@ namespace hpl {
 			wglSwapIntervalEXT(abX ? 1 : 0);
 		}
 		#elif defined(__linux__)
-		if (GLX_MESA_swap_control)
+		if (GLX_SGI_swap_control)
         {
-			glXSwapIntervalMESA(abX ? 1 : 0);
+			glXSwapIntervalSGI(abX ? 1 : 0);
 		}
 		#endif
 	}

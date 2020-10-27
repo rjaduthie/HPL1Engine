@@ -386,7 +386,7 @@ namespace hpl {
 
 	bool cPhysicsBodyNewton::GetContinuousCollision()
 	{
-		return NewtonBodyGetContinuousCollisionMode(mpNewtonBody)==1 ? true : false;
+		return NewtonBodyGetContinuousCollisionMode(mpNewtonBody) == 1;
 	}
 
 	//-----------------------------------------------------------------------
@@ -486,7 +486,7 @@ namespace hpl {
 
 		cPhysicsBodyNewton* pRigidBody = (cPhysicsBodyNewton*) NewtonBodyGetUserData(apBody);
 
-		if(pRigidBody->IsActive()==false) return;
+		if(!pRigidBody->IsActive()) return;
 
 		cVector3f vGravity = pRigidBody->mpWorld->GetGravity();
 
