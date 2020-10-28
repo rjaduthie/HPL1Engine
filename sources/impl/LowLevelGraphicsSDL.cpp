@@ -204,6 +204,7 @@ namespace hpl {
 
 		if(abFullscreen) mlFlags |= SDL_FULLSCREEN;
 
+		// TODO: detect multi-display?  Detect primary display? Match existing resolution?
 		Log(" Setting video mode: %d x %d - %d bpp\n",alWidth, alHeight, alBpp);
 		mpScreen = SDL_SetVideoMode( alWidth, alHeight, alBpp, mlFlags);
 		if(mpScreen==NULL){
@@ -228,14 +229,15 @@ namespace hpl {
 		}
 
 		Log(" GLEW sniffin' (aka initialising)...");
-		if(GLEW_OK != glewInit())
+        GLenum err = glewInit();
+		if(GLEW_OK == err)
 		{
 			Log("OK\n");
 		}
 		else
 		{
 			Log("ERROR!\n");
-			Error(" Couldn't init GLEW!\n");
+			Error(" Couldn't init GLEW!\n", glewGetErrorString(err));
 		}
 
 		///Setup up windows specifc context:

@@ -338,48 +338,6 @@ namespace hpl {
 		return NewtonBodyGetAutoSleep(mpNewtonBody) != 0;
 	}
 
-	//-----------------------------------------------------------------------
-// NewtonBodySetFreezeTreshold [sic] is no longer available
-//	void cPhysicsBodyNewton::SetAutoDisableLinearThreshold(float afThreshold)
-//	{
-//		mfAutoDisableLinearThreshold = afThreshold;
-//		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-//			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
-//	}
-//	float cPhysicsBodyNewton::GetAutoDisableLinearThreshold() const
-//	{
-//		return mfAutoDisableLinearThreshold;
-//	}
-//
-//	//-----------------------------------------------------------------------
-//
-//	void cPhysicsBodyNewton::SetAutoDisableAngularThreshold(float afThresold)
-//	{
-//		mfAutoDisableAngularThreshold = afThresold;
-//		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-//			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
-//	}
-//	float cPhysicsBodyNewton::GetAutoDisableAngularThreshold() const
-//	{
-//		return mfAutoDisableAngularThreshold;
-//	}
-//
-//	//-----------------------------------------------------------------------
-//
-//	void cPhysicsBodyNewton::SetAutoDisableNumSteps(int anNum)
-//	{
-//		mlAutoDisableNumSteps = anNum;
-//		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-//			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
-//	}
-//
-//	int cPhysicsBodyNewton::GetAutoDisableNumSteps() const
-//	{
-//		return mlAutoDisableNumSteps;
-//	}
-
-	//-----------------------------------------------------------------------
-
 	void cPhysicsBodyNewton::SetContinuousCollision(bool abOn)
 	{
 		NewtonBodySetContinuousCollisionMode(mpNewtonBody,abOn ? 1 : 0);
@@ -425,15 +383,15 @@ namespace hpl {
 			vP0 = vP1;
 		}
 	}
-//  //TODO:  NewtonBodyForEachPolygonDo has been removed from the Newton API
-//	////////////////////////////////////////////
-//
-//	void cPhysicsBodyNewton::RenderDebugGeometry(iLowLevelGraphics *apLowLevel,const cColor &aColor)
-//	{
-//		gpLowLevelGraphics = apLowLevel;
-//		gDebugColor = aColor;
+	////////////////////////////////////////////
+
+	void cPhysicsBodyNewton::RenderDebugGeometry(iLowLevelGraphics *apLowLevel,const cColor &aColor)
+	{
+		gpLowLevelGraphics = apLowLevel;
+		gDebugColor = aColor;
+        //TODO:  NewtonBodyForEachPolygonDo has been removed from the Newton API
 //		NewtonBodyForEachPolygonDo (mpNewtonBody, RenderDebugPolygon);
-//	}
+	}
 
 	//-----------------------------------------------------------------------
 

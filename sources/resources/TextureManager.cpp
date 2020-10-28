@@ -401,8 +401,9 @@ namespace hpl {
 
 		pTexture = FindTexture2D(asName,sPath);
 
-		if(pTexture==NULL && sPath!="")
+		if(pTexture==NULL && !sPath.empty())
 		{
+		    Log("pTexture NULL, sPath %s", sPath.c_str());
 			//Load the bitmap
 			iBitmap2D *pBmp;
 			pBmp = mpLowLevelResources->LoadBitmap2D(sPath);
@@ -430,6 +431,10 @@ namespace hpl {
 
 			AddResource(pTexture);
 		}
+		else if(sPath.empty())
+        {
+		    Log("sPath is not defined.\n");
+        }
 
 		if(pTexture)pTexture->IncUserCount();
 		else Error("Couldn't texture '%s'\n",asName.c_str());

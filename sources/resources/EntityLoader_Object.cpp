@@ -715,9 +715,9 @@ namespace hpl {
 
 		apBody->SetContinuousCollision(bContinuousCollision);
 
-		apBody->SetAutoDisableLinearThreshold(fAutoDisableLinearThreshold);
-		apBody->SetAutoDisableAngularThreshold(fAutoDisableAngularThreshold);
-		apBody->SetAutoDisableNumSteps(lAutoDisableNumSteps);
+//		apBody->SetAutoDisableLinearThreshold(fAutoDisableLinearThreshold);
+//		apBody->SetAutoDisableAngularThreshold(fAutoDisableAngularThreshold);
+//		apBody->SetAutoDisableNumSteps(lAutoDisableNumSteps);
 
 		apBody->SetPushedByCharacterGravity(bPushedByCharacterGravity);
 

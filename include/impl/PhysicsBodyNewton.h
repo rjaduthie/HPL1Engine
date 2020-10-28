@@ -71,12 +71,6 @@ namespace hpl {
 		bool GetEnabled() const;
 		void SetAutoDisable(bool abEnabled);
 		bool GetAutoDisable() const;
-		void SetAutoDisableLinearThreshold(float afThreshold);
-		float GetAutoDisableLinearThreshold() const;
-		void SetAutoDisableAngularThreshold(float afThresold);
-		float GetAutoDisableAngularThreshold() const;
-		void SetAutoDisableNumSteps(int alNum);
-		int GetAutoDisableNumSteps() const;
 		void SetContinuousCollision(bool abOn);
 		bool GetContinuousCollision();
 
