@@ -128,12 +128,12 @@ namespace hpl{
 			return false;
 		}
 
-		//Log("Creating CG prog\n");
+		Log("Creating CG prog\n");
 
 		mProgram = cgCreateProgramFromFile(mContext, CG_SOURCE, asFile.c_str(),mProfile,
 									asEntry.c_str(),NULL);
 
-		//Log("getting CG errors\n");
+//		Log("getting CG errors\n");
 
 		CGerror err = cgGetError();
 		if (err != CG_NO_ERROR)
@@ -172,7 +172,7 @@ namespace hpl{
 			return false;
 		}
 
-		//Log("Loading CG program\n");
+		Log("Loading CG program\n");
 
 		cgGLLoadProgram(mProgram);
 
@@ -193,7 +193,8 @@ namespace hpl{
 
 		///////////////////////////////
 		//Look for texture units.
-		//Log("File: %s\n", msFile.c_str());
+		Log("Looking for texture units:\n");
+        Log("File: %s\n", msFile.c_str());
 		int lCount =0;
 		CGparameter Param = cgGetFirstParameter(mProgram, CG_PROGRAM);
 		for(; Param != NULL; Param = cgGetNextParameter(Param))

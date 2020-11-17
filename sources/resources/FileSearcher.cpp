@@ -51,12 +51,13 @@ namespace hpl {
 
 	void cFileSearcher::AddDirectory(tString asPath, tString asMask)
 	{
+//	    Log("FileSearcher::AddDirectory Adding directory \"%s\"\n", asPath.c_str());
 		tWStringList lstFileNames;
 		//Make the path with only "/" and lower case.
 		asPath = cString::ToLowerCase(cString::ReplaceCharTo(asPath,"\\","/"));
 
 		tStringSetIt it = m_setLoadedDirs.find(asPath);
-		//If the path is not allready added, add it!
+		//If the path is not already added, add it!
 		if(it==m_setLoadedDirs.end())
 		{
 			m_setLoadedDirs.insert(asPath);
@@ -67,11 +68,16 @@ namespace hpl {
 			for(tWStringListIt it = lstFileNames.begin();it!=lstFileNames.end();it++)
 			{
 				tString sFile = cString::To8Char(*it);
+//				Log("Adding file to resources map: %s\n", sFile.c_str());
 				m_mapFiles.insert(tFilePathMap::value_type(
 													cString::ToLowerCase(sFile),
 													cString::SetFilePath(sFile,asPath)));
 			}
 		}
+		else
+        {
+		    Log("Directory already added!\n");
+        }
 	}
 
 	void cFileSearcher::ClearDirectories()

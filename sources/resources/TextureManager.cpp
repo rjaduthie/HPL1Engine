@@ -403,7 +403,7 @@ namespace hpl {
 
 		if(pTexture==NULL && !sPath.empty())
 		{
-		    Log("pTexture NULL, sPath %s", sPath.c_str());
+//		    Log("Texture located at path %s\n", sPath.c_str());
 			//Load the bitmap
 			iBitmap2D *pBmp;
 			pBmp = mpLowLevelResources->LoadBitmap2D(sPath);
@@ -433,7 +433,7 @@ namespace hpl {
 		}
 		else if(sPath.empty())
         {
-		    Log("sPath is not defined.\n");
+		    Log("Texture's path is not defined.\n");
         }
 
 		if(pTexture)pTexture->IncUserCount();
@@ -448,7 +448,7 @@ namespace hpl {
 	iTexture* cTextureManager::FindTexture2D(const tString &asName, tString &asFilePath)
 	{
 		iTexture *pTexture=NULL;
-
+//        Log("cTextureManager::FindTexture2D texture name = \"%s\"\n", asName.c_str());
 
 		if(cString::GetFileExt(asName)=="")
 		{

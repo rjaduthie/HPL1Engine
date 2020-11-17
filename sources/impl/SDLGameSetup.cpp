@@ -47,27 +47,42 @@ namespace hpl {
 
 	cSDLGameSetup::cSDLGameSetup()
 	{
-		if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER ) < 0) {
+		Log("INITIALISING SDL...");
+	    if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER ) < 0) {
 			FatalError("Error Initializing Display: %s",SDL_GetError());
 			exit(1);
 		}
-
+        else {
+            Log("OK\n");
+        }
+        Log("CONSTRUCTING LowLevelSystemSDL object...");
 		mpLowLevelSystem = hplNew( cLowLevelSystemSDL, () );
-		mpLowLevelGraphics = hplNew( cLowLevelGraphicsSDL,() );
+        Log("OK\n");
+        Log("CONSTRUCTING LowLevelGraphicsSDL object...");
+        mpLowLevelGraphics = hplNew( cLowLevelGraphicsSDL,() );
+        Log("OK\n");
+        Log("CONSTRUCTING LowLevelInputSDL object...");
 		mpLowLevelInput = hplNew( cLowLevelInputSDL,(mpLowLevelGraphics) );
+        Log("OK\n");
+        Log("CONSTRUCTING LowLevelResourcesSDL object...");
 		mpLowLevelResources = hplNew( cLowLevelResourcesSDL,((cLowLevelGraphicsSDL *)mpLowLevelGraphics) );
-//		#ifdef WIN32
-//			mpLowLevelSound = hplNew( cLowLevelSoundFmod, () );
-//		#else
-			mpLowLevelSound	= hplNew( cLowLevelSoundOpenAL,() );
-//		#endif
+        Log("OK\n");
+        Log("CONSTRUCTING LowLevelSoundOpenAL object...");
+        mpLowLevelSound	= hplNew( cLowLevelSoundOpenAL,() );
+        Log("OK\n");
+        Log("CONSTRUCTING LowLevelPhysicsNewton object...");
 		mpLowLevelPhysics = hplNew( cLowLevelPhysicsNewton,() );
+        Log("OK\n");
 
 #ifdef INCLUDE_HAPTIC
+        Log("Construct LowLevelPhysicsNewton object...");
 		mpLowLevelHaptic = hplNew( cLowLevelHapticHaptX,() );
+        Log("OK\n");
 #else
+        Log("SKIPPING LowLevelHaptic.\n");
 		mpLowLevelHaptic = NULL;
 #endif
+        Log("\n");
 
 	}
 

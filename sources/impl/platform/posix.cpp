@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <wctype.h>
+#include <cstring>
 #include "system/LowLevelSystem.h"
 
 namespace hpl {
@@ -63,7 +64,7 @@ namespace hpl {
 
 	void Platform::FindFileInDir(tWStringList &alstStrings,tWString asDir, tWString asMask)
 	{
-		//Log("Find Files in '%ls' with mask '%ls'\n",asDir.c_str(), asMask.c_str());
+//		Log("Find Files in '%ls' with mask '%ls'\n",asDir.c_str(), asMask.c_str());
 		//Get the search string
 		wchar_t sSpec[256];
 		wchar_t end = asDir[asDir.size()-1];
@@ -72,24 +73,40 @@ namespace hpl {
 		dirent *_entry;
 		struct stat statbuff;
 		tWString fileentry;
-
-		if ((dirhandle = opendir(cString::To8Char(asDir).c_str()))==NULL) return;
-
+        dirhandle = opendir(cString::To8Char(asDir).c_str());
+		if (dirhandle == NULL) {
+//		    Error("Cannot open directory.\n");
+		    return;
+		}
 		while ((_entry = readdir(dirhandle)) != NULL) {
+//		    Log("Found: %s", _entry->d_name);
 			if (end==_W('/'))
 				swprintf(sSpec,256,_W("%ls%s"),asDir.c_str(),_entry->d_name);
 			else
 				swprintf(sSpec,256,_W("%ls/%s"),asDir.c_str(),_entry->d_name);
 
 			// skip unreadable
-			if (stat(cString::To8Char(sSpec).c_str(),&statbuff) ==-1) continue;
+			if (stat(cString::To8Char(sSpec).c_str(),&statbuff) ==-1) {
+//			    Log(" which is unreadable.\n");
+			    continue;
+			}
 			// skip directories
-			if (S_ISDIR(statbuff.st_mode)) continue;
+			if (S_ISDIR(statbuff.st_mode)) {
+			    if(std::strcmp(_entry->d_name, ".") != 0 && std::strcmp(_entry->d_name, "..") != 0){
+			        char * sNewDir = asDir.c_str();
+                    FindFileInDir(alstStrings, std::string(asDir) + std::string(_entry->d_name), asMask);
+			    }
+                continue;
+			}
 
 			fileentry.assign(cString::To16Char(_entry->d_name));
 
-			if (!patiMatch(asMask.c_str(),fileentry.c_str())) continue;
+			if (!patiMatch(asMask.c_str(),fileentry.c_str())) {
+//			    Log(" which doensn't match the mask (\"%s\")\n", asMask.c_str());
+			    continue;
+			}
 			alstStrings.push_back(fileentry);
+//			Log("\n");
 		}
 		closedir(dirhandle);
 	}

@@ -151,7 +151,8 @@ namespace hpl {
 	//This is a windows implementation of this...I think.
 	void cLowLevelResourcesSDL::FindFilesInDir(tWStringList &alstStrings,tWString asDir, tWString asMask)
 	{
-		Platform::FindFileInDir(alstStrings, asDir,asMask);
+
+		Platform::FindFileInDir(alstStrings, asDir, asMask);
 	}
 
 	//-----------------------------------------------------------------------

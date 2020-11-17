@@ -241,7 +241,10 @@ namespace hpl {
 						aVars.GetInt("StreamBufferSize",4096),
 						aVars.GetInt("StreamBufferCount",8),
 						aVars.GetBool("LowLevelSoundLogging", false),
-						aVars.GetString("DeviceName"));
+//                        true,
+//						aVars.GetString("DeviceName")
+                        ""
+						);
 
 		//Init physics
 		mpPhysics->Init(mpResources);

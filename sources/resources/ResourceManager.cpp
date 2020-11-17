@@ -58,7 +58,7 @@ namespace hpl {
 	iResourceBase* iResourceManager::GetByName(const tString& asName)
 	{
 		tString sName = cString::ToLowerCase(asName);
-		//Log("Looking for '%s' \n", sName.c_str());
+//		Log("Looking for '%s' \n", sName.c_str());
 
 		tResourceNameMapIt it = m_mapNameResources.find(sName);
 		if(it == m_mapNameResources.end())return NULL;
@@ -202,8 +202,10 @@ namespace hpl {
 
 	iResourceBase* iResourceManager::FindLoadedResource(const tString &asName, tString &asFilePath)
 	{
+
 		iResourceBase* pResource = GetByName(asName);
 		if(pResource==NULL){
+//		    Log("Resource not already loaded.\n");
 			asFilePath = mpFileSearcher->GetFilePath(asName);
 		}
 		else {
